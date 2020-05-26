@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>Purchase</h1>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+
+            {% if not classes %}
+                <h1>You have not purchased any item.</h1>
+            {% else %}
+                <h1>You purchased:</h1>
+
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">ProductID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Buy</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <!-- Construct the rest of courses here -->
+                    {% for class in classes %}
+                    <tr>
+                        <td scope='row'>{{ class["product_id"] }}</td>
+                        <td>{{ class["title"] }}</td>
+                        <td>{{ class["description"] }}</td>
+                        <td>{{ class["amount"] }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                {% endif %}
+        </div>
+    </div>
+{% endblock %}

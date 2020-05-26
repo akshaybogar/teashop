@@ -1,0 +1,1 @@
+from teaapp import app
