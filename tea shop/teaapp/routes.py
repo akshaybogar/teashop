@@ -1,15 +1,36 @@
-from teaapp import app
+from teaapp import app, api
 from flask import render_template, url_for
 from flask import request
 from flask import Response
 from flask import json
 from flask import flash
 from flask import redirect
+from flask import jsonify
 from teaapp.models import UserModel, ProductModel, PurchaseModel
 from teaapp.forms import LoginForm, RegisterForm
 from teaapp.alchemy_db import db
+from flask_restplus import Resource
 
 obj_count = 1
+
+
+@api.route('/api', '/api/')
+class GetPostUsers(Resource):
+    def get(self):
+        return jsonify(UserModel.get())
+
+    def post(self):
+        data = api.payload
+        user = UserModel(user_id=data['user_id'], email=data['email'], password=data['password'],
+        firstname=data['firstname'], lastname=data['lastname'])
+        user.save_to_db()
+        return jsonify(UserModel.find_by_id(data['user_id']))
+
+@api.route('/api/<idx>')
+class GetPutResource(Resource):
+    def get(self, idx):
+        return jsonify(UserModel.find_by_id(idx))
+
 
 @app.route('/')
 @app.route('/index')
@@ -58,26 +79,18 @@ def purchase():
     # To be completed
     product_id = request.form.get('product_id')
     title = request.form.get('title')
-    user_id = 2
+    user_id = 1
     if product_id:
         if PurchaseModel.find_by_product_user(user_id=user_id,product_id=product_id):
             flash('Item already in your cart!', "success")
-            return redirect('/products')
+            return redirect('/products/')
         else:
             purchase_item = PurchaseModel(user_id=user_id, product_id=product_id)
             purchase_item.save_to_db()
+            flash("Item successfully added!", "success")
 
     classes = None
     return render_template('purchase.html', purchase=True, classes=classes)
-
-@app.route('/api/')
-@app.route('/api/<id>/')
-def api(id=None):
-    if not id:
-        data = ProductModel.get()
-    else:
-        data = ProductModel.find_by_id(id)
-    return Response(json.dumps(data), mimetype='application/json')
 
 @app.route('/user')
 def user():

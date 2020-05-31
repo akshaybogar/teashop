@@ -39,6 +39,10 @@ class UserModel(db.Model):
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
 
+    @classmethod
+    def find_by_id(cls, idx):
+        return cls.query.filter_by(user_id=idx).first().json()
+
 
 class ProductModel(db.Model):
     __tablename__ = 'PRODUCTS'
