@@ -3,10 +3,10 @@ A website for tea shop.
 
 ## How to Run
 - Create a virtual environment using virtualenv. eg: "virtualenv teashop"
-- Enter virtual environment "source teashop\Scripts\activate"
+- Enter virtual environment "teaapp\Scripts\activate"
 - Install all packages from requirements.txt "pip install requirements.txt". Requirements file is present in teashop directory.
 - Run the command "flask run" from command line.
-- This will launch the app on port 5000.
+- This will launch the app on port 5000. http://127.0.0.1:5000/home
 
 ### Features to be added
 - Web security in the application
