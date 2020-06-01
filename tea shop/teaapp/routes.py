@@ -14,23 +14,77 @@ from flask_restplus import Resource
 obj_count = 1
 
 
-@api.route('/api', '/api/')
+@api.route('/api/users', '/api/users/')
 class GetPostUsers(Resource):
     def get(self):
         return jsonify(UserModel.get())
 
     def post(self):
         data = api.payload
-        user = UserModel(user_id=data['user_id'], email=data['email'], password=data['password'],
-        firstname=data['firstname'], lastname=data['lastname'])
+        user = UserModel(**data)
         user.save_to_db()
-        return jsonify(UserModel.find_by_id(data['user_id']))
+        return UserModel.find_by_id(data['user_id']).json(), 201
 
-@api.route('/api/<idx>')
-class GetPutResource(Resource):
+@api.route('/api/products', '/api/products/')
+class GetPostProducts(Resource):
+    def get(self):
+        return jsonify(ProductModel.get())
+
+    def post(self):
+        data = api.payload
+        product = ProductModel(**data)
+        product.save_to_db()
+        return ProductModel.find_by_id(data['product_id']).json(), 201
+
+@api.route('/api/users/<idx>')
+class GetUserResource(Resource):
     def get(self, idx):
-        return jsonify(UserModel.find_by_id(idx))
+        return UserModel.find_by_id(idx).json(), 200
 
+    def put(self, idx):
+        data = api.payload
+        user = UserModel.find_by_id(idx)
+        if user:
+            user.password = data['password']
+            user.firstname = data['firstname']
+            user.lastname = data['lastname']
+            user.email = data['email']
+        else:
+            user = UsertModel(**data)
+        user.save_to_db()
+        return UserModel.find_by_id(data['user_id']).json(), 200
+
+    def delete(self, idx):
+        user = UserModel.find_by_id(idx)
+        if user:
+            user.delete_from_db()
+        return {"message": "user deleted"}, 200
+
+@api.route('/api/products/<idx>')
+class GetProductResource(Resource):
+    def get(self, idx):
+        product = ProductModel.find_by_id(idx)
+        if not product:
+            return {"message": "Product not found"}, 400
+        return jsonify(product.json())
+
+    def put(self, idx):
+        data = api.payload
+        product = ProductModel.find_by_id(idx)
+        if product:
+            product.description = data['description']
+            product.amount = data['amount']
+            product.title = data['title']
+        else:
+            product = ProductModel(**data)
+        product.save_to_db()
+        return ProductModel.find_by_id(data['product_id']).json(), 200
+
+    def delete(self, idx):
+        product = ProductModel.find_by_id(idx)
+        if product:
+            product.delete_from_db()
+        return {"message": "product deleted"}, 200
 
 @app.route('/')
 @app.route('/index')

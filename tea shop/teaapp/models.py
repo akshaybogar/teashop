@@ -21,6 +21,10 @@ class UserModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def json(self):
         return {'user_id':str(self.user_id), 'firstname':self.firstname,
          'lastname':self.lastname, 'email':self.email, 'password':self.password}
@@ -41,7 +45,7 @@ class UserModel(db.Model):
 
     @classmethod
     def find_by_id(cls, idx):
-        return cls.query.filter_by(user_id=idx).first().json()
+        return cls.query.filter_by(user_id=idx).first()
 
 
 class ProductModel(db.Model):
@@ -61,6 +65,10 @@ class ProductModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def json(self):
         return {'product_id':str(self.product_id), 'title':self.title,
          'description':self.description, 'amount':str(self.amount)}
@@ -71,7 +79,7 @@ class ProductModel(db.Model):
 
     @classmethod
     def find_by_id(cls, product_id):
-            return (cls.query.filter_by(product_id=product_id).first()).json()
+            return (cls.query.filter_by(product_id=product_id).first())
 
 class PurchaseModel(db.Model):
     __tablename__ = 'PURCHASE'
